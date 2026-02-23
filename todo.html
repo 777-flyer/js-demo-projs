@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDoList</title>
+    <style>
+      /* basics */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* header */
+      .header {
+        background-color: #2c3e50;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin: 15px 20px;
+        color: #2c3e50;
+        text-decoration: none;
+        font-size: 15px;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+      /* main content */
+      .main-content {
+        flex: 1;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 0 20px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .main-content h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 5px;
+      }
+
+      .main-content > p {
+        text-align: center;
+        color: #555;
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
+      /* full white card */
+      .todo-card {
+        background-color: white;
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        padding: 25px;
+      }
+
+      /* new tasks input */
+      .add-task-area {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      /* Text input for typing the task */
+      #task-input {
+        flex: 1;
+        padding: 10px 14px;
+        font-size: 15px;
+        border: 2px solid #bdc3c7;
+        border-radius: 5px;
+        outline: none;
+      }
+
+      /* make the input border blue when clicked */
+      #task-input:focus {
+        border-color: #2980b9;
+      }
+
+      /* Add task button */
+      #add-btn {
+        padding: 10px 20px;
+        background-color: #2980b9;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      #add-btn:hover {
+        background-color: #1a6fa8;
+      }
+
+      /* rrror message (shown when user tries to add empty task) */
+      #error-message {
+        color: #e74c3c;
+        font-size: 13px;
+        margin-bottom: 10px;
+        min-height: 18px;
+      }
+
+      /* task counter */
+      .task-info {
+        font-size: 13px;
+        color: #777;
+        margin-bottom: 10px;
+      }
+
+      /* divider */
+      .divider {
+        border: none;
+        border-top: 2px solid black;
+        margin: 10px 0 15px 0;
+      }
+
+      /* The list of tasks */
+      #task-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* each task item in the list */
+      .task-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 10px;
+        border-bottom: 1px solid #ecf0f1;
+        background-color: white;
+      }
+
+      .task-item:last-child {
+        border-bottom: none;
+      }
+
+      /* Checkbox for marking task as done */
+      .task-checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #27ae60;
+      }
+
+      /* The task text */
+      .task-text {
+        flex: 1;
+        font-size: 15px;
+        color: #2c3e50;
+        word-break: break-word;
+      }
+
+      /* When a task is completed, the text gets a line through it */
+      .task-text.completed {
+        text-decoration: line-through;
+        color: #aaa;
+      }
+
+      /* Delete button for each task */
+      .delete-btn {
+        padding: 5px 12px;
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 13px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .delete-btn:hover {
+        background-color: #c0392b;
+      }
+
+      /* message shown when there are no tasks */
+      #empty-message {
+        text-align: center;
+        color: #aaa;
+        font-size: 15px;
+        padding: 20px 0;
+      }
+
+      /* clear all */
+      .clear-all-btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #7f8c8d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .clear-all-btn:hover {
+        background-color: #606c6d;
+      }
+
+      /* footer */
+      .footer {
+        background-color: #2c3e50;
+        color: #bdc3c7;
+        text-align: center;
+        padding: 18px;
+        font-size: 14px;
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- headwer -->
+    <div class="header">
+      <h1>ToDo List</h1>
+    </div>
+
+    <a href="index.html" class="back-link"> <<< Back to Home</a>
+
+    <div class="main-content">
+      <h2>ToDo List</h2>
+      <p>
+        Add tasks below. Your tasks are saved automatically and will still be
+        here when you refresh the page.
+      </p>
+
+      <!-- The white card -->
+      <div class="todo-card">
+        <!-- Input area to type and add a task -->
+        <div class="add-task-area">
+          <input type="text" id="task-input" placeholder="Type a task here.." />
+          <button id="add-btn" onclick="addTask()">Add Task</button>
+        </div>
+
+        <!-- error message area (empty by default) -->
+        <div id="error-message"></div>
+
+        <!-- Shows how many tasks total and how many completed -->
+        <div class="task-info" id="task-info">No tasks yet!</div>
+
+        <hr class="divider" />
+
+        <!-- The task list - tasks are added here by JavaScript -->
+        <ul id="task-list">
+          <!-- Tasks will be inserted here -->
+        </ul>
+
+        <!-- Empty message shown when there are no tasks -->
+        <div id="empty-message">No tasks added yet. Add one above!</div>
+
+        <!-- Button to delete all tasks at once -->
+        <button class="clear-all-btn" onclick="clearAllTasks()">
+          Clear All Tasks
+        </button>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div class="footer">
+      <p>ToDo List</p>
+    </div>
+
+    <!-- js -->
+    <script>
+      // We store tasks as an array of objects.
+      // Each object looks like: { text: "Buy milk", completed: false }
+      // We save this array to localStorage so it persists.
+
+      // var to store all tasks
+      var tasks = [];
+
+      // load tasks from localStorage when page loads
+      function loadTasksFromStorage() {
+        // localStorage.getItem returns the stored string (or null if nothing stored)
+        var storedData = localStorage.getItem("myTodoTasks");
+
+        // If there is stored data, parse it from JSON string back to array
+        if (storedData != null) {
+          tasks = JSON.parse(storedData);
+        } else {
+          // Otherwise start with an empty array
+          tasks = [];
+        }
+      }
+
+      // save tasks to localStorage
+      function saveTasksToStorage() {
+        // Convert the tasks array to a JSON string and save it
+        localStorage.setItem("myTodoTasks", JSON.stringify(tasks));
+      }
+
+      // rendfer all tasks on the screen
+      // This function clears the list and redraws all tasks from the tasks array
+      function renderTasks() {
+        // Get the task list element
+        var taskList = document.getElementById("task-list");
+
+        // Clear whatever is currently in the list
+        taskList.innerHTML = "";
+
+        // If there are no tasks, show the empty message
+        if (tasks.length == 0) {
+          document.getElementById("empty-message").style.display = "block";
+        } else {
+          // Hide the empty message
+          document.getElementById("empty-message").style.display = "none";
+
+          // loop through all tasks and create HTML for each one
+          for (var i = 0; i < tasks.length; i++) {
+            // Create a new list item element
+            var li = document.createElement("li");
+            li.className = "task-item";
+
+            // We use the index to identify this task in other functions
+            // We store it as a data attribute
+            li.setAttribute("data-index", i);
+
+            // Create the checkbox
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "task-checkbox";
+            checkbox.checked = tasks[i].completed;
+
+            // We need to use a function to handle the onclick properly inside a loop
+            // Using a self-calling function to capture the correct index value
+            checkbox.setAttribute("onchange", "toggleComplete(" + i + ")");
+
+            // Create the task text span
+            var taskTextSpan = document.createElement("span");
+            taskTextSpan.className = "task-text";
+
+            // If this task is completed, add the completed class for strikethrough
+            if (tasks[i].completed) {
+              taskTextSpan.className = "task-text completed";
+            }
+
+            // Set the text content
+            taskTextSpan.innerHTML = tasks[i].text;
+
+            // Create the delete button
+            var deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-btn";
+            deleteBtn.innerHTML = "Delete";
+            deleteBtn.setAttribute("onclick", "deleteTask(" + i + ")");
+
+            // Add all elements to the list item
+            li.appendChild(checkbox);
+            li.appendChild(taskTextSpan);
+            li.appendChild(deleteBtn);
+
+            // Add the list item to the task list
+            taskList.appendChild(li);
+          }
+        }
+
+        // Update the task info text
+        updateTaskInfo();
+      }
+
+      // update the task count info text at the top
+      function updateTaskInfo() {
+        var total = tasks.length;
+        var completedCount = 0;
+
+        // Count how many tasks are completed
+        for (var i = 0; i < tasks.length; i++) {
+          if (tasks[i].completed) {
+            completedCount++;
+          }
+        }
+
+        if (total == 0) {
+          document.getElementById("task-info").innerHTML = "No tasks yet.";
+        } else {
+          document.getElementById("task-info").innerHTML =
+            "Total tasks: " +
+            total +
+            " | Completed: " +
+            completedCount +
+            " | Remaining: " +
+            (total - completedCount);
+        }
+      }
+
+      // addd new task
+      function addTask() {
+        // Get the text from the input field
+        var inputField = document.getElementById("task-input");
+        var taskText = inputField.value;
+
+        // Removing extra spaces from the beginning and end
+        taskText = taskText.trim();
+
+        // handling empty tasks
+        if (taskText == "") {
+          document.getElementById("error-message").innerHTML =
+            "Please type a task before clicking Add!";
+          return;
+        }
+
+        // clear any previous error message
+        document.getElementById("error-message").innerHTML = "";
+
+        // Create a new task object
+        var newTask = {
+          text: taskText,
+          completed: false,
+        };
+
+        // Add the new task to the tasks array
+        tasks.push(newTask);
+
+        // Save to localStorage
+        saveTasksToStorage();
+
+        // render the task list on screen
+        renderTasks();
+
+        // Clear the input field so user can type a new task
+        inputField.value = "";
+
+        // focus back on the input field for convenience
+        inputField.focus();
+      }
+
+      // Toggle a task as completed or not completed
+      function toggleComplete(index) {
+        // Flip the completed status: true becomes false, false becomes true
+        tasks[index].completed = !tasks[index].completed;
+
+        // Save the updated tasks to localStorage
+        saveTasksToStorage();
+
+        // render the task list
+        renderTasks();
+      }
+
+      // delete a single task
+      function deleteTask(index) {
+        // Remove 1 item from the tasks array at the given index
+        tasks.splice(index, 1);
+
+        // Save updated tasks to localStorage
+        saveTasksToStorage();
+        renderTasks();
+      }
+
+      // Clear all tasks at once
+      function clearAllTasks() {
+        // user confirmation
+        var confirmed = confirm(
+          "Sure you want to delete ALL your tasks? Check again!",
+        );
+
+        if (confirmed) {
+          // Empty the tasks array
+          tasks = [];
+
+          // Remove from localStorage
+          localStorage.removeItem("myTodoTasks");
+          renderTasks();
+        }
+      }
+
+      // allow pressing Enter key to add a task
+      document
+        .getElementById("task-input")
+        .addEventListener("keypress", function (event) {
+          // event.key tells us which key was pressed
+          if (event.key == "Enter") {
+            addTask();
+          }
+        });
+
+      // Run when the page first loads
+      loadTasksFromStorage();
+      renderTasks();
+    </script>
+  </body>
+</html>

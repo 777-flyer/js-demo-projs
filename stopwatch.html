@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stopwatch - CSE 391</title>
+    <style>
+      /* basics */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* header */
+      .header {
+        background-color: #2c3e50;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin: 15px 20px;
+        color: #2c3e50;
+        text-decoration: none;
+        font-size: 15px;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+      /* main content */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+      }
+
+      .main-content h2 {
+        color: #2c3e50;
+        margin-bottom: 5px;
+      }
+
+      .main-content p {
+        color: #555;
+        font-size: 14px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      /* stopwatch box */
+      .stopwatch-box {
+        background-color: white;
+        border: 3px solid #2c3e50;
+        border-radius: 10px;
+        padding: 40px 60px;
+        text-align: center;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* big time display */
+      #time-display {
+        font-size: 72px;
+        font-weight: bold;
+        color: #2c3e50;
+        font-family: "Courier New", monospace;
+        margin: 0 0 10px 0;
+      }
+
+      /* secomds label */
+      .seconds-label {
+        font-size: 16px;
+        color: #777;
+        margin: 0 0 20px 0;
+      }
+
+      /* status text*/
+      #status-message {
+        font-size: 20px;
+        color: #e74c3c;
+        font-weight: bold;
+        min-height: 22px;
+        margin-bottom: 15px;
+      }
+
+      /* progress bar */
+      .progress-bar-container {
+        background-color: #ecf0f1;
+        border: 1px solid #bdc3c7;
+        border-radius: 5px;
+        width: 100%;
+        height: 20px;
+        margin-bottom: 25px;
+        overflow: hidden;
+      }
+
+      #progress-bar {
+        background-color: #27ae60;
+        height: 100%;
+        width: 0%;
+        /* Smooth transition for the progress bar */
+        transition: width 0.3s;
+      }
+
+      /* buttons */
+      .buttons-row {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+      }
+
+      /* basic css for all btns */
+      .control-btn {
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        color: white;
+      }
+
+      /* start button - green */
+      #start-btn {
+        background-color: #27ae60;
+      }
+      #start-btn:hover {
+        background-color: #1e8449;
+      }
+
+      /* stop button - red */
+      #stop-btn {
+        background-color: #e74c3c;
+      }
+      #stop-btn:hover {
+        background-color: #c0392b;
+      }
+
+      /* reset button - gray */
+      #reset-btn {
+        background-color: #7f8c8d;
+      }
+      #reset-btn:hover {
+        background-color: #606c6d;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: #2c3e50;
+        color: #bdc3c7;
+        text-align: center;
+        padding: 18px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- header -->
+    <div class="header">
+      <h1>Stopwatch</h1>
+    </div>
+
+    <!-- backlink -->
+    <a href="index.html" class="back-link"><<< Back to Home</a>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <h2>Stopwatch (1 real second = 3 steps)</h2>
+      <p>
+        a stopwatch that counts time in multiples of 3 seconds and stops at 30
+        seconds unless reset.
+      </p>
+
+      <!-- stopwatch box -->
+      <div class="stopwatch-box">
+        <!-- Big time -->
+        <p id="time-display">0</p>
+        <p class="seconds-label">seconds</p>
+
+        <!-- status message -->
+        <p id="status-message">Press Start to begin</p>
+
+        <!-- progress bar -->
+        <div class="progress-bar-container">
+          <div id="progress-bar"></div>
+        </div>
+
+        <!-- cntrol buttons -->
+        <div class="buttons-row">
+          <button class="control-btn" id="start-btn" onclick="startTimer()">
+            Start
+          </button>
+          <button class="control-btn" id="stop-btn" onclick="stopTimer()">
+            Stop
+          </button>
+          <button class="control-btn" id="reset-btn" onclick="resetTimer()">
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Stopwatch</p>
+    </div>
+
+    <!-- jscodes -->
+    <script>
+      // variables to keep track of the timer state
+
+      // displayed count (goes 0, 3, 6, 9 ... 30)
+      var currentCount = 0;
+
+      // maxz count
+      var maxCount = 30;
+
+      // 1s=3steps
+      var step = 3;
+
+      // This stores the interval ID returned by setInterval
+      // We need it to stop the timer later
+      var timerInterval = null;
+
+      // This tracks if the timer is currently running
+      var isRunning = false;
+
+      // time starter
+      function startTimer() {
+        // Don't start if already running
+        if (isRunning) {
+          return;
+        }
+
+        // Don't start if we already reached 30
+        if (currentCount >= maxCount) {
+          document.getElementById("status-message").innerHTML =
+            "Reached 30! Please reset first.";
+          return;
+        }
+
+        // Mark the timer as running
+        isRunning = true;
+
+        // Update status
+        document.getElementById("status-message").innerHTML =
+          "Timer is running...";
+
+        // setInterval fires every 1000ms = 1 real second
+        // Each real second we add 3 to the display.
+        // So after 10 real seconds: 10 ticks x 3 = 30 (maximum reached)
+        timerInterval = setInterval(function () {
+          // Adds 3 to the displayed count every real second
+          currentCount = currentCount + step;
+
+          // Updates the display on screen
+          document.getElementById("time-display").innerHTML = currentCount;
+
+          // Updates the progress bar
+          // currentCount goes from 0 to 30, so percentage = (currentCount / 30) * 100
+          var percentage = (currentCount / maxCount) * 100;
+          document.getElementById("progress-bar").style.width =
+            percentage + "%";
+
+          // Change progress bar color as we get closer to 30
+          if (currentCount >= 24) {
+            // Last 2 ticks (24, 27) - turn red
+            document.getElementById("progress-bar").style.backgroundColor =
+              "#e74c3c";
+          } else if (currentCount >= 15) {
+            // Middle ticks - turn yellow/orange
+            document.getElementById("progress-bar").style.backgroundColor =
+              "#f39c12";
+          }
+
+          // Check if we have reached 30
+          if (currentCount >= maxCount) {
+            // Stop the timer automatically
+            stopTimer();
+            // Show a message that it has stopped
+            document.getElementById("status-message").innerHTML =
+              "Reached 30 in 10 seconds!";
+          }
+        }, 1000); // 1000 milliseconds = 1 real second per tick
+      }
+
+      // stop/pauuse
+      function stopTimer() {
+        // clearInterval stops the setInterval from calling the function anymore
+        clearInterval(timerInterval);
+
+        // Mark the timer as not running
+        isRunning = false;
+
+        // Only update the message if we haven't hit 30 yet
+        if (currentCount < maxCount) {
+          document.getElementById("status-message").innerHTML =
+            "Paused at " + currentCount + ". Press Start to resume.";
+        }
+      }
+
+      // reset
+      function resetTimer() {
+        // First stop the timer if it is running
+        clearInterval(timerInterval);
+        isRunning = false;
+
+        // Reset the count back to 0
+        currentCount = 0;
+
+        // Update the display back to 0
+        document.getElementById("time-display").innerHTML = 0;
+
+        // Reset the progress bar to empty and green
+        document.getElementById("progress-bar").style.width = "0%";
+        document.getElementById("progress-bar").style.backgroundColor =
+          "#27ae60";
+
+        // Update status message
+        document.getElementById("status-message").innerHTML =
+          "Timer reset. Press Start to begin.";
+      }
+    </script>
+  </body>
+</html>
