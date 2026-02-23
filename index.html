@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Projects</title>
+    <style>
+      /* basic styling */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Header styling */
+      .header {
+        background-color: #2c3e50;
+        color: white;
+        text-align: center;
+        padding: 30px;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+
+      .header p {
+        margin: 8px;
+        font-size: 16px;
+        color: #bdc3c7;
+      }
+
+      /* maain content*/
+      .main-content {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+
+      .main-content h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+      }
+
+      /* each card */
+      .project-card {
+        background-color: white;
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+
+      .project-card h3 {
+        color: #2c3e50;
+        font-size: 22px;
+        margin-top: 0;
+      }
+
+      .project-card p {
+        color: #555;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      /* project switcch button*/
+      .project-card a {
+        display: inline-block;
+        background-color: #2c3e50;
+        color: white;
+        text-decoration: none;
+        padding: 12px 30px;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-top: 10px;
+      }
+
+      .project-card a:hover {
+        background-color: #1a252f;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: #2c3e50;
+        color: #bdc3c7;
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- header -->
+    <div class="header">
+      <h1>JavsScript Demo Projects</h1>
+    </div>
+
+    <!-- projects - main content -->
+    <div class="main-content">
+      <h2>Select a Project</h2>
+
+      <!-- Project 1 -->
+      <div class="project-card">
+        <h3>Fortune Generator</h3>
+        <p>
+          A js project which will show a random fortune every time it loads. You
+          can change the font color, background color, border color and font
+          style of the fortune box using four given buttons.
+        </p>
+        <a href="fortune.html">Click here to access this project</a>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="project-card">
+        <h3>Stopwatch</h3>
+        <p>
+          A stopwatch that counts time in steps of 3 seconds (3, 6, 9... up to
+          30). It automatically stops at 30 seconds. You can start, stop and
+          reset it.
+        </p>
+        <a href="stopwatch.html">Go to Stopwatch</a>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="project-card">
+        <h3>ToDo List</h3>
+        <p>
+          A todo list where you can add tasks, mark them as completed with a
+          checkbox and delete them. Tasks are saved using localStorage so they
+          stay even after refreshing the page.
+        </p>
+        <a href="todo.html">access ToDo List</a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Js projects for 391</p>
+    </div>
+  </body>
+</html>
